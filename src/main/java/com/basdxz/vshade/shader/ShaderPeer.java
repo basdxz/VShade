@@ -1,11 +1,12 @@
 package com.basdxz.vshade.shader;
 
 
+import com.basdxz.vbuffers.common.Disposable;
 import com.basdxz.vshade.layout.IVariableLayout;
 import com.basdxz.vshade.query.IShaderQuery;
 import com.basdxz.vshade.query.ShaderQuery;
 import com.basdxz.vshade.type.GLSLType;
-import com.basdxz.vshade.variable.ILinkedVariable;
+import com.basdxz.vshade.variable.linked.ILinkedVariable;
 import lombok.*;
 import org.lwjgl.opengl.*;
 
@@ -47,6 +48,11 @@ public class ShaderPeer implements IShaderPeer {
         vertexAttributes.put(attribute.location(), attribute);
     }
 
+    @Override
+    public ShaderPeer vertices(int vertices) {
+        return this;
+    }
+
     protected void compactLayout() {
         vertexStride = vertexAttributes.values().stream().mapToInt(GLSLType::typeSize).sum();
         var byteOffset = 0;
@@ -76,7 +82,13 @@ public class ShaderPeer implements IShaderPeer {
 
     @Override
     public void dispose() {
-        //locationUniformMap.values().forEach(Disposable::dispose);
-        //locationAttributeMap.values().forEach(Disposable::dispose);
+        if (linked) {
+            query = null;
+            vertexStride = 0;
+            layouts.forEach(Disposable::dispose);
+            layouts.clear();
+            vertexAttributes.clear();
+            linked = false;
+        }
     }
 }

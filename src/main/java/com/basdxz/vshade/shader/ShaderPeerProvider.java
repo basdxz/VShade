@@ -1,5 +1,5 @@
 package com.basdxz.vshade.shader;
 
-public interface ShaderLinkProvider {
+public interface ShaderPeerProvider {
     IShaderPeer shaderPeer();
 }

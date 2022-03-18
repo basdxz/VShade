@@ -1,7 +1,7 @@
-package com.basdxz.vshade.variable.samplers;
+package com.basdxz.vshade.variable.linked.samplers;
 
 
-import com.basdxz.vshade.variable.LinkedVariable;
+import com.basdxz.vshade.variable.linked.LinkedVariable;
 import lombok.*;
 import lombok.experimental.*;
 import org.lwjgl.opengl.*;

@@ -2,9 +2,9 @@ package com.basdxz.vshade.example;
 
 
 import com.basdxz.vshade.layout.VertexLayout;
-import com.basdxz.vshade.variable.floats.GLFloatVec2;
-import com.basdxz.vshade.variable.floats.GLFloatVec3;
-import com.basdxz.vshade.variable.floats.GLFloatVec4;
+import com.basdxz.vshade.variable.linked.floats.GLFloatVec2;
+import com.basdxz.vshade.variable.linked.floats.GLFloatVec3;
+import com.basdxz.vshade.variable.linked.floats.GLFloatVec4;
 import lombok.*;
 import lombok.experimental.*;
 

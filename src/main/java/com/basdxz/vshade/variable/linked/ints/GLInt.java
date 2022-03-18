@@ -1,9 +1,9 @@
-package com.basdxz.vshade.variable.ints;
+package com.basdxz.vshade.variable.linked.ints;
 
 
 import com.basdxz.vshade.type.GLSLType;
 import com.basdxz.vshade.type.GLSLTypes;
-import com.basdxz.vshade.variable.LinkedVariable;
+import com.basdxz.vshade.variable.linked.LinkedVariable;
 import lombok.*;
 import lombok.experimental.*;
 import org.lwjgl.opengl.*;

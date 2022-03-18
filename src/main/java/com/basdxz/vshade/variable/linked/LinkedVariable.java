@@ -1,8 +1,10 @@
-package com.basdxz.vshade.variable;
+package com.basdxz.vshade.variable.linked;
 
 
 import com.basdxz.vshade.exception.ShaderException;
 import com.basdxz.vshade.layout.IVariableLayout;
+import com.basdxz.vshade.variable.GLSLVariable;
+import com.basdxz.vshade.variable.GLSLVariableLink;
 import lombok.*;
 import lombok.var;
 import lombok.experimental.*;

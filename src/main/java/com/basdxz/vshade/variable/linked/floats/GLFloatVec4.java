@@ -1,42 +1,42 @@
-package com.basdxz.vshade.variable.floats;
+package com.basdxz.vshade.variable.linked.floats;
 
 
 import com.basdxz.vshade.type.GLSLType;
 import com.basdxz.vshade.type.GLSLTypes;
-import com.basdxz.vshade.variable.LinkedVariable;
+import com.basdxz.vshade.variable.linked.LinkedVariable;
 import lombok.*;
 import lombok.experimental.*;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
+import org.joml.Vector4f;
+import org.joml.Vector4fc;
 import org.lwjgl.opengl.*;
 
 import java.nio.ByteBuffer;
 
 @SuperBuilder
-public class GLFloatMat4 extends LinkedVariable<GLFloatMat4, Matrix4fc, Matrix4f> {
+public class GLFloatVec4 extends LinkedVariable<GLFloatVec4, Vector4fc, Vector4f> {
     @Override
     public GLSLType wrappedType() {
-        return GLSLTypes.FLOAT_MAT4;
+        return GLSLTypes.FLOAT_VEC3;
     }
 
     @Override
-    public Matrix4f newDefaultOutput() {
-        return new Matrix4f();
+    public Vector4f newDefaultOutput() {
+        return new Vector4f();
     }
 
     @Override
-    protected void setImpl(int byteOffset, @NonNull Matrix4fc input) {
+    protected void setImpl(int byteOffset, @NonNull Vector4fc input) {
         input.get(byteOffset, buffer);
     }
 
     @Override
-    protected Matrix4f getImpl(int byteOffset, @NonNull Matrix4f output) {
+    protected Vector4f getImpl(int byteOffset, @NonNull Vector4f output) {
         return output.set(byteOffset, buffer);
     }
 
     @Override
     protected void uploadUniformImpl(int program, int location, boolean transpose, @NonNull ByteBuffer input) {
-        GL41.glProgramUniformMatrix4(program, location, transpose, input.asFloatBuffer());
+        GL41.glProgramUniform3(program, location, input.asFloatBuffer());
     }
 
     @Override

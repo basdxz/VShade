@@ -4,7 +4,7 @@ package com.basdxz.vshade.shader;
 import com.basdxz.vbuffers.common.Disposable;
 import com.basdxz.vshade.layout.IVariableLayout;
 import com.basdxz.vshade.query.IShaderQuery;
-import com.basdxz.vshade.variable.ILinkedVariable;
+import com.basdxz.vshade.variable.linked.ILinkedVariable;
 import lombok.*;
 
 public interface IShaderPeer extends Disposable {
@@ -15,6 +15,8 @@ public interface IShaderPeer extends Disposable {
     void link();
 
     void addVertexAttribute(@NonNull ILinkedVariable<?, ?, ?> attribute);
+
+    IShaderPeer vertices(int vertices);
 
     int vertexStride();
 

@@ -1,7 +1,8 @@
-package com.basdxz.vshade.variable;
+package com.basdxz.vshade.variable.linked;
 
 
 import com.basdxz.vbuffers.common.MemUtils;
+import com.basdxz.vshade.variable.GLSLVariableLink;
 import lombok.*;
 
 import java.nio.*;

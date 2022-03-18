@@ -1,6 +1,7 @@
-package com.basdxz.vshade.type;
+package com.basdxz.vshade.variable;
 
-import com.basdxz.vshade.variable.GLSLVariable;
+import com.basdxz.vshade.type.GLSLType;
+import com.basdxz.vshade.type.GLSLTypeWrapper;
 import lombok.*;
 
 import java.nio.ByteBuffer;

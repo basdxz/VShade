@@ -1,6 +1,5 @@
-package com.basdxz.vshade.type;
+package com.basdxz.vshade.variable;
 
-import com.basdxz.vshade.variable.GLSLVariable;
 import lombok.*;
 
 import java.util.Collections;

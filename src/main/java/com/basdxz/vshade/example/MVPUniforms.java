@@ -2,7 +2,7 @@ package com.basdxz.vshade.example;
 
 
 import com.basdxz.vshade.layout.UniformLayout;
-import com.basdxz.vshade.variable.floats.GLFloatMat4;
+import com.basdxz.vshade.variable.linked.floats.GLFloatMat4;
 import lombok.*;
 import lombok.experimental.*;
 

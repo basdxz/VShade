@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Getter
 @SuperBuilder
-public abstract class ShaderProgram implements ShaderLinkProvider, Disposable {
+public abstract class ShaderProgram implements ShaderPeerProvider, Disposable {
     protected static int currentShader = 0;
 
     protected final ShaderPeer shaderPeer = new ShaderPeer();

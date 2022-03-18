@@ -6,7 +6,10 @@ import org.lwjgl.opengl.*;
 
 import java.util.ArrayList;
 
-public class ShaderCompiler {
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
+public final class ShaderCompiler {
     public static int createShader(Iterable<ShaderSource> sources) {
         val shaders = new ArrayList<Integer>();
         try {
@@ -47,7 +50,7 @@ public class ShaderCompiler {
         return program;
     }
 
-    //TODO: Rethink this mess
+    //TODO: Improve verification logging
     private static void verifyProgram(int program, int param, String message) {
         val infoLog = GL20.glGetProgramInfoLog(program, 2000);
         val status = GL20.glGetProgrami(program, param);

@@ -2,10 +2,10 @@ package com.basdxz.vshade.query;
 
 
 import com.basdxz.vbuffers.common.MemUtils;
-import com.basdxz.vshade.type.GLSLGenericUniformBlock;
-import com.basdxz.vshade.type.GLSLGenericVariable;
 import com.basdxz.vshade.type.GLSLTypes;
-import com.basdxz.vshade.type.GLSLUniformBlock;
+import com.basdxz.vshade.variable.GLSLGenericUniformBlock;
+import com.basdxz.vshade.variable.GLSLGenericVariable;
+import com.basdxz.vshade.variable.GLSLUniformBlock;
 import com.basdxz.vshade.variable.GLSLVariable;
 import lombok.*;
 import org.lwjgl.opengl.*;

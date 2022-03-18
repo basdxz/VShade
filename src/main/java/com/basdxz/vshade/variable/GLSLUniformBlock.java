@@ -1,6 +1,6 @@
-package com.basdxz.vshade.type;
+package com.basdxz.vshade.variable;
 
-import com.basdxz.vshade.variable.GLSLVariable;
+import com.basdxz.vshade.type.GLSLResource;
 
 import java.util.List;
 

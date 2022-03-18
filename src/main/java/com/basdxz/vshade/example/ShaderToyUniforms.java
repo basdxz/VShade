@@ -2,11 +2,11 @@ package com.basdxz.vshade.example;
 
 
 import com.basdxz.vshade.layout.UniformLayout;
-import com.basdxz.vshade.variable.floats.GLFloat;
-import com.basdxz.vshade.variable.floats.GLFloatVec3;
-import com.basdxz.vshade.variable.floats.GLFloatVec4;
-import com.basdxz.vshade.variable.ints.GLInt;
-import com.basdxz.vshade.variable.samplers.GLSampler2D;
+import com.basdxz.vshade.variable.linked.floats.GLFloat;
+import com.basdxz.vshade.variable.linked.floats.GLFloatVec3;
+import com.basdxz.vshade.variable.linked.floats.GLFloatVec4;
+import com.basdxz.vshade.variable.linked.ints.GLInt;
+import com.basdxz.vshade.variable.linked.samplers.GLSampler2D;
 import lombok.*;
 import lombok.experimental.*;
 
