@@ -49,11 +49,11 @@ public class Texture implements Disposable {
         val id = GL45.glCreateTextures(GL11.GL_TEXTURE_2D);
 
         // Set scaling flags
-        GL45.glTextureParameteri(id, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
-        GL45.glTextureParameteri(id, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+        GL45.glTextureParameteri(id, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+        GL45.glTextureParameteri(id, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
 
         // Set format and upload texture
-        GL45.glTextureStorage2D(id, 1, GL11.GL_RGBA8, decoder.getWidth(), decoder.getHeight());
+        GL45.glTextureStorage2D(id, 4, GL11.GL_RGBA8, decoder.getWidth(), decoder.getHeight());
         GL45.glTextureSubImage2D(id, 0, 0, 0, decoder.getWidth(), decoder.getHeight(), GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
 
         // Gen mipmaps
