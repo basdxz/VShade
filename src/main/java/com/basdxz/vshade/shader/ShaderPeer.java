@@ -3,6 +3,7 @@ package com.basdxz.vshade.shader;
 
 import com.basdxz.vbuffers.common.Disposable;
 import com.basdxz.vshade.layout.IVariableLayout;
+import com.basdxz.vshade.layout.IVertexLayout;
 import com.basdxz.vshade.query.IShaderQuery;
 import com.basdxz.vshade.query.ShaderQuery;
 import com.basdxz.vshade.type.GLSLType;
@@ -17,6 +18,7 @@ import java.util.TreeMap;
 
 public class ShaderPeer implements IShaderPeer {
     protected final Set<IVariableLayout> layouts = new HashSet<>();
+    protected final Set<IVertexLayout> vertexLayouts = new HashSet<>();
     protected final Map<Integer, ILinkedVariable<?, ?, ?>> vertexAttributes = new TreeMap<>();
 
     @Getter
@@ -32,28 +34,30 @@ public class ShaderPeer implements IShaderPeer {
     @Override
     public void addLayout(@NonNull IVariableLayout layout) {
         layouts.add(layout);
+        if (layout instanceof IVertexLayout)
+            vertexLayouts.add((IVertexLayout) layout);
+    }
+
+    @Override
+    public ShaderPeer vertices(int vertices) {
+        if (linked)
+            vertexAttributes.values().forEach((attribute) -> attribute.blocks(vertices));
+        return this;
     }
 
     @Override
     public void link() {
         if (!linked) {
             layouts.forEach(IVariableLayout::link);
-            compactLayout();
+            compactVertexLayout();
             linked = true;
         }
     }
 
-    @Override
-    public void addVertexAttribute(@NonNull ILinkedVariable<?, ?, ?> attribute) {
-        vertexAttributes.put(attribute.location(), attribute);
-    }
+    protected void compactVertexLayout() {
+        vertexLayouts.forEach(vertexLayout -> vertexLayout.linkedAttributes()
+                .forEach((attribute) -> vertexAttributes.put(attribute.location(), attribute)));
 
-    @Override
-    public ShaderPeer vertices(int vertices) {
-        return this;
-    }
-
-    protected void compactLayout() {
         vertexStride = vertexAttributes.values().stream().mapToInt(GLSLType::typeSize).sum();
         var byteOffset = 0;
         for (val attribute : vertexAttributes.values()) {

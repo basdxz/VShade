@@ -45,7 +45,6 @@ public abstract class VariableLayout implements IVariableLayout {
     public void dispose() {
         if (linked) {
             variables.forEach(Disposable::dispose);
-            variables.clear();
             linked = false;
         }
     }

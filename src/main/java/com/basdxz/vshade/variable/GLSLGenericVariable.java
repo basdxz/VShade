@@ -4,8 +4,9 @@ import com.basdxz.vshade.type.GLSLType;
 import com.basdxz.vshade.type.GLSLTypeWrapper;
 import lombok.*;
 
-import java.nio.ByteBuffer;
 import java.util.StringJoiner;
+
+import static com.basdxz.vbuffers.common.Constants.NULL_INT;
 
 @Getter
 public class GLSLGenericVariable implements GLSLVariable, GLSLTypeWrapper {
@@ -21,7 +22,7 @@ public class GLSLGenericVariable implements GLSLVariable, GLSLTypeWrapper {
 
     public GLSLGenericVariable(@NonNull GLSLType type, @NonNull String name, int program, int location,
                                int arraySize, int offset) {
-        this(type, name, program, location, arraySize, offset, -1, -1);
+        this(type, name, program, location, arraySize, offset, NULL_INT, NULL_INT);
     }
 
     public GLSLGenericVariable(@NonNull GLSLType type, @NonNull String name, int program, int location, int arraySize,
@@ -42,11 +43,11 @@ public class GLSLGenericVariable implements GLSLVariable, GLSLTypeWrapper {
     }
 
     private int initArrayStride(int arrayStride) {
-        return arrayStride > 0 ? arrayStride : wrappedType.typeSize();
+        return arrayStride == NULL_INT ? arrayStride : wrappedType.typeSize();
     }
 
     private int initMatrixStride(int matrixStride) {
-        return matrixStride > 0 ? matrixStride : wrappedType.columnSize();
+        return matrixStride == NULL_INT ? matrixStride : wrappedType.columnSize();
     }
 
     @Override
@@ -59,15 +60,5 @@ public class GLSLGenericVariable implements GLSLVariable, GLSLTypeWrapper {
                 .add("byteSize=" + stride)
                 .add("byteOffset=" + offset)
                 .toString();
-    }
-
-    @Override
-    public void downloadUniform(int program, int location, ByteBuffer output) {
-
-    }
-
-    @Override
-    public void uploadUniform(int program, int location, boolean transpose, ByteBuffer input) {
-
     }
 }
