@@ -32,7 +32,7 @@ public final class NativeLoader {
     }
 
     private static void configLWJGL() {
-        System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + ".\\" + NATIVES_DIR);
+        System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/" + NATIVES_DIR);
     }
 
     private static void unpackAndLoadNativeLib(String libFileName) {
