@@ -39,7 +39,7 @@ public class ExampleMain {
     }
 
     protected static void initOpenGL() {
-        NativeLoader.load();
+        NativeLoader.loadLWJGL();
         try {
             Display.setDisplayMode(new DisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT));
             Display.create(new PixelFormat(), OPENGL_CONTEXT_ATTRIBUTES);

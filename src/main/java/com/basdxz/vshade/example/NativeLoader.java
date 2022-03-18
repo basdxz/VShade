@@ -26,8 +26,15 @@ import java.nio.file.Files;
 public final class NativeLoader {
     public static final String NATIVES_DIR = "natives";
 
-    public static void load() {
-        unpackNativeLib("lwjgl64.dll");
+    public static void loadLWJGL() {
+        val os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("windows")) {
+            unpackNativeLib("lwjgl64.dll");
+        } else if (os.contains("linux")) {
+            unpackNativeLib("liblwjgl64.so");
+        } else {
+            throw new IllegalStateException("Unsupported OS");
+        }
         configLWJGL();
     }
 
