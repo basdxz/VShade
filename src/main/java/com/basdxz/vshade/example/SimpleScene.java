@@ -6,6 +6,7 @@ import com.basdxz.vbuffers.common.ResourceHelper;
 import com.basdxz.vbuffers.texture.Texture;
 import com.basdxz.vshade.shader.ShaderSource;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.*;
 
 public class SimpleScene implements Disposable {
@@ -59,7 +60,7 @@ public class SimpleScene implements Disposable {
     }
 
     public boolean isFinished() {
-        return Display.isCloseRequested();
+        return GLFW.glfwWindowShouldClose(ExampleMain.window);
     }
 
     public void update(Profiler profiler) {

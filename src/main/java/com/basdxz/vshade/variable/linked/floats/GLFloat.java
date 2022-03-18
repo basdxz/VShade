@@ -37,11 +37,11 @@ public class GLFloat extends LinkedVariable<GLFloat, Float, Float> {
 
     @Override
     protected void uploadUniformImpl(int program, int location, boolean transpose, @NonNull ByteBuffer input) {
-        GL41.glProgramUniform1(program, location, input.asFloatBuffer());
+        GL41.glProgramUniform1fv(program, location, input.asFloatBuffer());
     }
 
     @Override
     protected void downloadUniformImpl(int program, int location, @NonNull ByteBuffer output) {
-        GL20.glGetUniform(program, location, output.asFloatBuffer());
+        GL20.glGetUniformfv(program, location, output.asFloatBuffer());
     }
 }

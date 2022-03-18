@@ -36,11 +36,11 @@ public class GLInt extends LinkedVariable<GLInt, Integer, Integer> {
 
     @Override
     protected void uploadUniformImpl(int program, int location, boolean transpose, @NonNull ByteBuffer input) {
-        GL41.glProgramUniform1(program, location, input.asIntBuffer());
+        GL41.glProgramUniform1iv(program, location, input.asIntBuffer());
     }
 
     @Override
     protected void downloadUniformImpl(int program, int location, @NonNull ByteBuffer output) {
-        GL20.glGetUniform(program, location, output.asIntBuffer());
+        GL20.glGetUniformiv(program, location, output.asIntBuffer());
     }
 }

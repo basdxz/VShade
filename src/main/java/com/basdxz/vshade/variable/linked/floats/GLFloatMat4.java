@@ -36,11 +36,11 @@ public class GLFloatMat4 extends LinkedVariable<GLFloatMat4, Matrix4fc, Matrix4f
 
     @Override
     protected void uploadUniformImpl(int program, int location, boolean transpose, @NonNull ByteBuffer input) {
-        GL41.glProgramUniformMatrix4(program, location, transpose, input.asFloatBuffer());
+        GL41.glProgramUniformMatrix4fv(program, location, transpose, input.asFloatBuffer());
     }
 
     @Override
     protected void downloadUniformImpl(int program, int location, @NonNull ByteBuffer output) {
-        GL20.glGetUniform(program, location, output.asFloatBuffer());
+        GL20.glGetUniformfv(program, location, output.asFloatBuffer());
     }
 }

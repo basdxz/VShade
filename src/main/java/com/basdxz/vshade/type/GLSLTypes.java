@@ -73,7 +73,7 @@ public enum GLSLTypes implements GLSLType {
     SAMPLER_2D_MULTISAMPLE(samplerBuilder("sampler2DMS", GL32.GL_SAMPLER_2D_MULTISAMPLE)),
     SAMPLER_2D_MULTISAMPLE_ARRAY(samplerBuilder("sampler2DMSArray", GL32.GL_SAMPLER_2D_MULTISAMPLE_ARRAY)),
     SAMPLER_CUBE_SHADOW(samplerBuilder("samplerCubeShadow", GL30.GL_SAMPLER_CUBE_SHADOW)),
-    SAMPLER_BUFFER(samplerBuilder("samplerBuffer", GL30.GL_SAMPLER_BUFFER)),
+    SAMPLER_BUFFER(samplerBuilder("samplerBuffer", GL31.GL_SAMPLER_BUFFER)),
     SAMPLER_2D_RECT(samplerBuilder("sampler2DRect", GL31.GL_SAMPLER_2D_RECT)),
     SAMPLER_2D_RECT_SHADOW(samplerBuilder("sampler2DRectShadow", GL31.GL_SAMPLER_2D_RECT_SHADOW)),
 
@@ -85,8 +85,8 @@ public enum GLSLTypes implements GLSLType {
     INT_SAMPLER_2D_ARRAY(samplerBuilder("isampler2DArray", GL30.GL_INT_SAMPLER_2D_ARRAY)),
     INT_SAMPLER_2D_MULTISAMPLE(samplerBuilder("isampler2DMS", GL32.GL_INT_SAMPLER_2D_MULTISAMPLE)),
     INT_SAMPLER_2D_MULTISAMPLE_ARRAY(samplerBuilder("isampler2DMSArray", GL32.GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY)),
-    INT_SAMPLER_BUFFER(samplerBuilder("isamplerBuffer", GL30.GL_INT_SAMPLER_BUFFER)),
-    INT_SAMPLER_2D_RECT(samplerBuilder("isampler2DRect", GL30.GL_INT_SAMPLER_2D_RECT)),
+    INT_SAMPLER_BUFFER(samplerBuilder("isamplerBuffer", GL31.GL_INT_SAMPLER_BUFFER)),
+    INT_SAMPLER_2D_RECT(samplerBuilder("isampler2DRect", GL31.GL_INT_SAMPLER_2D_RECT)),
 
     UNSIGNED_INT_SAMPLER_1D(samplerBuilder("usampler1D", GL30.GL_UNSIGNED_INT_SAMPLER_1D)),
     UNSIGNED_INT_SAMPLER_2D(samplerBuilder("usampler2D", GL30.GL_UNSIGNED_INT_SAMPLER_2D)),
@@ -96,8 +96,8 @@ public enum GLSLTypes implements GLSLType {
     UNSIGNED_INT_SAMPLER_2D_ARRAY(samplerBuilder("usampler2DArray", GL30.GL_UNSIGNED_INT_SAMPLER_2D_ARRAY)),
     UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE(samplerBuilder("usampler2DMS", GL32.GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE)),
     UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY(samplerBuilder("usampler2DMSArray", GL32.GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY)),
-    UNSIGNED_INT_SAMPLER_BUFFER(samplerBuilder("usamplerBuffer", GL30.GL_UNSIGNED_INT_SAMPLER_BUFFER)),
-    UNSIGNED_INT_SAMPLER_2D_RECT(samplerBuilder("usampler2DRect", GL30.GL_UNSIGNED_INT_SAMPLER_2D_RECT)),
+    UNSIGNED_INT_SAMPLER_BUFFER(samplerBuilder("usamplerBuffer", GL31.GL_UNSIGNED_INT_SAMPLER_BUFFER)),
+    UNSIGNED_INT_SAMPLER_2D_RECT(samplerBuilder("usampler2DRect", GL31.GL_UNSIGNED_INT_SAMPLER_2D_RECT)),
 
     IMAGE_1D(imageBuilder("image1D", GL42.GL_IMAGE_1D)),
     IMAGE_2D(imageBuilder("image2D", GL42.GL_IMAGE_2D)),

@@ -1,9 +1,14 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'java'
 }
 
 group 'com.basdxz'
 version '0.1.0'
+
+
+project.ext.lwjglVersion = "3.3.1"
 
 repositories {
     mavenCentral()
@@ -22,11 +27,19 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'com.google.guava:guava:31.0.1-jre'
 
-    implementation 'org.lwjgl.lwjgl:lwjgl:2.9.3'
-    implementation 'org.lwjgl:lwjgl-util:2.7.1'
     implementation 'org.joml:joml:1.10.4'
 
     implementation 'org.l33tlabs.twl:pngdecoder:1.0'
     implementation files('libs/dds-lwjgl-2.1.0.jar')
     implementation 'de.javagl:obj:0.3.0'
+
+    implementation "org.lwjgl:lwjgl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+    runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:natives-windows"
 }

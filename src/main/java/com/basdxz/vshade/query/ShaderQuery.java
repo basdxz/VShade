@@ -46,7 +46,7 @@ public class ShaderQuery implements IShaderQuery {
     protected Map<String, GLSLVariable> variableMap(int glTypeEnum) {
         var locationIndexMap = new TreeMap<Integer, Integer>();
         for (int index : getProgramActiveResourceIndices(glTypeEnum)) {
-            GL43.glGetProgramResource(program, glTypeEnum, index, LOCATION_PROP, null, resultBuffer);
+            GL43.glGetProgramResourceiv(program, glTypeEnum, index, LOCATION_PROP, null, resultBuffer);
             locationIndexMap.put(resultBuffer.get(0), index);
         }
 
@@ -87,7 +87,7 @@ public class ShaderQuery implements IShaderQuery {
         for (Map.Entry<String, Integer> entry : nameLocationMap.entrySet()) {
             final int location = entry.getValue();
 
-            GL43.glGetProgramResource(program, GL43.GL_UNIFORM_BLOCK, location, UNIFORM_BLOCK_PROP, null, resultBuffer);
+            GL43.glGetProgramResourceiv(program, GL43.GL_UNIFORM_BLOCK, location, UNIFORM_BLOCK_PROP, null, resultBuffer);
 
             val activeVariables = resultBuffer.get(0);
             if (activeVariables < 1)
@@ -95,7 +95,7 @@ public class ShaderQuery implements IShaderQuery {
 
             val arrayStride = resultBuffer.get(1);
             val variableLocations = MemUtils.newIntBuffer(activeVariables);
-            GL43.glGetProgramResource(program, GL43.GL_UNIFORM_BLOCK, location, ACTIVE_VARIABLES_PROP, null, variableLocations);
+            GL43.glGetProgramResourceiv(program, GL43.GL_UNIFORM_BLOCK, location, ACTIVE_VARIABLES_PROP, null, variableLocations);
 
             val variables = getUniformBlockGLSLVariables(MemUtils.newArrayFromBuffer(variableLocations));
             val name = entry.getKey();
@@ -117,12 +117,12 @@ public class ShaderQuery implements IShaderQuery {
     }
 
     protected boolean resourceExists(int glTypeEnum, int index, IntBuffer prop) {
-        GL43.glGetProgramResource(program, glTypeEnum, index, prop, null, resultBuffer);
+        GL43.glGetProgramResourceiv(program, glTypeEnum, index, prop, null, resultBuffer);
         return resultBuffer.get(0) != NULL_INT;
     }
 
     protected GLSLVariable getGLSLVariable(int glTypeEnum, int index, int location, int byteOffset) {
-        GL43.glGetProgramResource(program, glTypeEnum, index, VARIABLE_PROP, null, resultBuffer);
+        GL43.glGetProgramResourceiv(program, glTypeEnum, index, VARIABLE_PROP, null, resultBuffer);
 
         val type = GLSLTypes.get(resultBuffer.get(0));
         val arraySize = resultBuffer.get(1);
@@ -137,7 +137,7 @@ public class ShaderQuery implements IShaderQuery {
     }
 
     protected GLSLVariable getUniformGLSLVariable(int index) {
-        GL43.glGetProgramResource(program, GL43.GL_UNIFORM, index, UNIFORM_VARIABLE_PROP, null, resultBuffer);
+        GL43.glGetProgramResourceiv(program, GL43.GL_UNIFORM, index, UNIFORM_VARIABLE_PROP, null, resultBuffer);
 
         val type = GLSLTypes.get(resultBuffer.get(0));
         val location = resultBuffer.get(1);
@@ -150,7 +150,7 @@ public class ShaderQuery implements IShaderQuery {
     }
 
     protected String getProgramResourceName(int glTypeEnum, int index) {
-        GL43.glGetProgramResource(program, glTypeEnum, index,
+        GL43.glGetProgramResourceiv(program, glTypeEnum, index,
                 MemUtils.newBufferFromValue(GL43.GL_NAME_LENGTH), null, resultBuffer);
         return ARRAY_BRACKET_PATTERN
                 .matcher(GL43.glGetProgramResourceName(program, glTypeEnum, index, resultBuffer.get(0)))

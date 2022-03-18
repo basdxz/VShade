@@ -36,11 +36,11 @@ public class GLFloatVec3 extends LinkedVariable<GLFloatVec3, Vector3fc, Vector3f
 
     @Override
     protected void uploadUniformImpl(int program, int location, boolean transpose, @NonNull ByteBuffer input) {
-        GL41.glProgramUniform3(program, location, input.asFloatBuffer());
+        GL41.glProgramUniform3fv(program, location, input.asFloatBuffer());
     }
 
     @Override
     protected void downloadUniformImpl(int program, int location, @NonNull ByteBuffer output) {
-        GL20.glGetUniform(program, location, output.asFloatBuffer());
+        GL20.glGetUniformfv(program, location, output.asFloatBuffer());
     }
 }
