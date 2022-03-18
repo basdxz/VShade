@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'com.basdxz'
+version '0.1.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        name "clojars"
+        url "https://repo.clojars.org"
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.google.guava:guava:31.0.1-jre'
+
+    implementation 'org.lwjgl.lwjgl:lwjgl:2.9.3'
+    implementation 'org.lwjgl:lwjgl-util:2.7.1'
+    implementation 'org.joml:joml:1.10.4'
+
+    implementation 'org.l33tlabs.twl:pngdecoder:1.0'
+    implementation files('libs/dds-lwjgl-2.1.0.jar')
+    implementation 'de.javagl:obj:0.3.0'
+}
