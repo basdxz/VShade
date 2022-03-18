@@ -4,18 +4,16 @@ package com.basdxz.vshade.variable.linked;
 import com.basdxz.vshade.exception.ShaderException;
 import com.basdxz.vshade.layout.IVariableLayout;
 import com.basdxz.vshade.variable.GLSLVariable;
-import com.basdxz.vshade.variable.GLSLVariableLink;
 import lombok.*;
 import lombok.var;
 import lombok.experimental.*;
 
 import java.nio.ByteBuffer;
 
-//TODO: Fix broken unsafe generic casting
 //TODO: Ensure buffers are properly disposed of
 //TODO: Verbose logging for linking and disposal
 @SuperBuilder
-public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> implements ILinkedVariable<LinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> {
+public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> implements ILinkedVariable<T, INPUT, OUTPUT> {
     @Getter
     @NonNull
     protected final String name;
@@ -40,9 +38,9 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
     protected ByteBuffer buffer;
     protected boolean disposableBuffer;
 
-    public <R extends GLSLVariableLink> R init() {
+    public T init() {
         variableLayout.preLink(this);
-        return (R) this;
+        return self();
     }
 
     @Override
@@ -59,55 +57,55 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R autoUpdate(boolean autoUpdate) {
+    public T autoUpdate(boolean autoUpdate) {
         this.autoUpdate = autoUpdate;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R transpose(boolean transpose) {
+    public T transpose(boolean transpose) {
         this.transpose = transpose;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R legacyUniform(boolean legacyUniform) {
+    public T legacyUniform(boolean legacyUniform) {
         this.legacyUniform = legacyUniform;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R offset(int offset) {
+    public T offset(int offset) {
         this.offset = offset;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R blockStride(int blockStride) {
+    public T blockStride(int blockStride) {
         this.blockStride = blockStride;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R blocks(int blocks) {
+    public T blocks(int blocks) {
         this.blocks = blocks;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R buffer(ByteBuffer buffer) {
+    public T buffer(ByteBuffer buffer) {
         this.buffer = buffer;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R disposableBuffer(boolean disposableBuffer) {
+    public T disposableBuffer(boolean disposableBuffer) {
         this.disposableBuffer = disposableBuffer;
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R set(int block, @NonNull INPUT... inputs) {
+    public T set(int block, @NonNull INPUT... inputs) {
         if (linked) {
             blockIndexCheck(block);
             arrayIndexCheck(inputs.length - 1);
@@ -115,24 +113,24 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
                 setImpl(byteOffset(block, i), inputs[i]);
             autoUpload();
         }
-        return (R) this;
+        return self();
     }
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R set(int block, int index, @NonNull INPUT input) {
+    public T set(int block, int index, @NonNull INPUT input) {
         if (linked) {
             blockIndexCheck(block);
             arrayIndexCheck(index);
             setImpl(byteOffset(block, index), input);
             autoUpload();
         }
-        return (R) this;
+        return self();
     }
 
     protected abstract void setImpl(int byteOffset, @NonNull INPUT input);
 
     @Override
-    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R set(int blockOffset, @NonNull ByteBuffer input) {
+    public T set(int blockOffset, @NonNull ByteBuffer input) {
         if (linked) {
             blockIndexCheck(blockOffset);
             val blockLimit = Math.min(input.remaining() / typeSize(), blocks);
@@ -144,7 +142,7 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
             }
             autoUpload();
         }
-        return (R) this;
+        return self();
     }
 
     protected void autoUpload() {

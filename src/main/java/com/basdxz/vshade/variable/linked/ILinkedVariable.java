@@ -2,97 +2,98 @@ package com.basdxz.vshade.variable.linked;
 
 
 import com.basdxz.vbuffers.common.MemUtils;
+import com.basdxz.vshade.type.SelfTyped;
 import com.basdxz.vshade.variable.GLSLVariableLink;
 import lombok.*;
 
 import java.nio.*;
 
-public interface ILinkedVariable<T extends ILinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> extends GLSLVariableLink {
-    <R extends T> R autoUpdate(boolean autoUpdate);
+public interface ILinkedVariable<T extends ILinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> extends GLSLVariableLink, SelfTyped<T> {
+    T autoUpdate(boolean autoUpdate);
 
-    <R extends T> R transpose(boolean transpose);
+    T transpose(boolean transpose);
 
-    <R extends T> R legacyUniform(boolean legacyUniform);
+    T legacyUniform(boolean legacyUniform);
 
-    <R extends T> R offset(int offset);
+    T offset(int offset);
 
-    <R extends T> R blockStride(int blockStride);
+    T blockStride(int blockStride);
 
-    <R extends T> R blocks(int blocks);
+    T blocks(int blocks);
 
-    <R extends T> R buffer(ByteBuffer buffer);
+    T buffer(ByteBuffer buffer);
 
-    <R extends T> R disposableBuffer(boolean disposableBuffer);
+    T disposableBuffer(boolean disposableBuffer);
 
-    default <R extends T> R set(@NonNull final INPUT... inputs) {
+    default T set(@NonNull final INPUT... inputs) {
         return set(0, inputs);
     }
 
-    <R extends T> R set(int block, @NonNull final INPUT... inputs);
+    T set(int block, @NonNull final INPUT... inputs);
 
-    default <R extends T> R set(@NonNull final INPUT input) {
+    default T set(@NonNull final INPUT input) {
         return set(0, 0, input);
     }
 
-    default <R extends T> R set(int index, @NonNull final INPUT input) {
+    default T set(int index, @NonNull final INPUT input) {
         return set(0, index, input);
     }
 
-    <R extends T> R set(int block, int index, @NonNull final INPUT input);
+    T set(int block, int index, @NonNull final INPUT input);
 
-    default <R extends T> R set(@NonNull final CharBuffer input) {
+    default T set(@NonNull final CharBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(@NonNull final ShortBuffer input) {
+    default T set(@NonNull final ShortBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(@NonNull final IntBuffer input) {
+    default T set(@NonNull final IntBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(@NonNull final LongBuffer input) {
+    default T set(@NonNull final LongBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(@NonNull final FloatBuffer input) {
+    default T set(@NonNull final FloatBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(@NonNull final DoubleBuffer input) {
+    default T set(@NonNull final DoubleBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(@NonNull final ByteBuffer input) {
+    default T set(@NonNull final ByteBuffer input) {
         return set(0, input);
     }
 
-    default <R extends T> R set(int blockOffset, @NonNull final CharBuffer input) {
+    default T set(int blockOffset, @NonNull final CharBuffer input) {
         return set(blockOffset, MemUtils.getByteBuffer(input));
     }
 
-    default <R extends T> R set(int blockOffset, @NonNull final ShortBuffer input) {
+    default T set(int blockOffset, @NonNull final ShortBuffer input) {
         return set(blockOffset, MemUtils.getByteBuffer(input));
     }
 
-    default <R extends T> R set(int blockOffset, @NonNull final IntBuffer input) {
+    default T set(int blockOffset, @NonNull final IntBuffer input) {
         return set(blockOffset, MemUtils.getByteBuffer(input));
     }
 
-    default <R extends T> R set(int blockOffset, @NonNull final LongBuffer input) {
+    default T set(int blockOffset, @NonNull final LongBuffer input) {
         return set(blockOffset, MemUtils.getByteBuffer(input));
     }
 
-    default <R extends T> R set(int blockOffset, @NonNull final FloatBuffer input) {
+    default T set(int blockOffset, @NonNull final FloatBuffer input) {
         return set(blockOffset, MemUtils.getByteBuffer(input));
     }
 
-    default <R extends T> R set(int blockOffset, @NonNull final DoubleBuffer input) {
+    default T set(int blockOffset, @NonNull final DoubleBuffer input) {
         return set(blockOffset, MemUtils.getByteBuffer(input));
     }
 
-    <R extends T> R set(int blockOffset, @NonNull final ByteBuffer input);
+    T set(int blockOffset, @NonNull final ByteBuffer input);
 
     void upload();
 
