@@ -9,7 +9,9 @@ import lombok.experimental.*;
 
 import java.nio.ByteBuffer;
 
-//TODO: Validate post link?
+//TODO: Fix broken unsafe generic casting
+//TODO: Ensure buffers are properly disposed of
+//TODO: Verbose logging for linking and disposal
 @SuperBuilder
 public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> implements ILinkedVariable<LinkedVariable<T, INPUT, OUTPUT>, INPUT, OUTPUT> {
     @Getter
@@ -34,6 +36,7 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
     protected int blockStride;
     protected int blocks;
     protected ByteBuffer buffer;
+    protected boolean disposableBuffer;
 
     public <R extends GLSLVariableLink> R init() {
         variableLayout.preLink(this);
@@ -92,6 +95,12 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
     @Override
     public <R extends LinkedVariable<T, INPUT, OUTPUT>> R buffer(ByteBuffer buffer) {
         this.buffer = buffer;
+        return (R) this;
+    }
+
+    @Override
+    public <R extends LinkedVariable<T, INPUT, OUTPUT>> R disposableBuffer(boolean disposableBuffer) {
+        this.disposableBuffer = disposableBuffer;
         return (R) this;
     }
 
@@ -219,5 +228,10 @@ public abstract class LinkedVariable<T extends LinkedVariable<T, INPUT, OUTPUT>,
 
     @Override
     public void dispose() {
+        if (linked) {
+            variable = null;
+            linked = false;
+            buffer = null;
+        }
     }
 }

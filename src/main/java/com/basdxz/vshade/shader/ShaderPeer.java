@@ -2,6 +2,7 @@ package com.basdxz.vshade.shader;
 
 
 import com.basdxz.vshade.layout.IVariableLayout;
+import com.basdxz.vshade.query.IShaderQuery;
 import com.basdxz.vshade.query.ShaderQuery;
 import com.basdxz.vshade.type.GLSLType;
 import com.basdxz.vshade.variable.ILinkedVariable;
@@ -18,14 +19,13 @@ public class ShaderPeer implements IShaderPeer {
     protected final Map<Integer, ILinkedVariable<?, ?, ?>> vertexAttributes = new TreeMap<>();
 
     @Getter
-    protected ShaderQuery query;
+    protected IShaderQuery query;
     protected boolean linked;
     @Getter
     protected int vertexStride;
 
     public void init(int program) {
         query = new ShaderQuery(program);
-        vertexStride = query.inputByteSize();
     }
 
     @Override

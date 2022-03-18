@@ -3,12 +3,12 @@ package com.basdxz.vshade.shader;
 
 import com.basdxz.vbuffers.common.Disposable;
 import com.basdxz.vshade.layout.IVariableLayout;
-import com.basdxz.vshade.query.ShaderQuery;
+import com.basdxz.vshade.query.IShaderQuery;
 import com.basdxz.vshade.variable.ILinkedVariable;
 import lombok.*;
 
 public interface IShaderPeer extends Disposable {
-    ShaderQuery query();
+    IShaderQuery query();
 
     void addLayout(@NonNull IVariableLayout layout);
 

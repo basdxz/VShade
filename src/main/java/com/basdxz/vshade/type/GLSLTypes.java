@@ -1,19 +1,18 @@
 package com.basdxz.vshade.type;
 
 import com.basdxz.vshade.exception.ShaderException;
-import com.basdxz.vshade.query.ShaderQuery;
 import com.google.common.collect.ImmutableMap;
 import lombok.*;
 import org.lwjgl.opengl.*;
 
-import static com.basdxz.vbuffers.common.Constants.DOUBLE_SIZE;
+import static com.basdxz.vbuffers.common.Constants.*;
 
 /*
     Reference: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetActiveUniform.xhtml
  */
 @Getter
 public enum GLSLTypes implements GLSLType {
-    NULL(new Builder(ShaderQuery.NULL_STRING, ShaderQuery.NULL_INT, ShaderQuery.NULL_INT)),
+    NULL(new Builder(NULL_STRING, NULL_INT, NULL_INT)),
 
     FLOAT(floatBuilder("float", GL11.GL_FLOAT)),
     FLOAT_VEC2(floatBuilder("vec2", GL20.GL_FLOAT_VEC2).rows(2)),
@@ -222,7 +221,7 @@ public enum GLSLTypes implements GLSLType {
         private int unitSize = 4;
 
         public void validate() {
-            if (typeName.equals(ShaderQuery.NULL_STRING))
+            if (typeName.equals(NULL_STRING))
                 return;
             if (typeName.length() < 1)
                 throw new ShaderException("Field typeName length can't be less than 1.");

@@ -21,6 +21,8 @@ public interface ILinkedVariable<T extends ILinkedVariable<T, INPUT, OUTPUT>, IN
 
     <R extends T> R buffer(ByteBuffer buffer);
 
+    <R extends T> R disposableBuffer(boolean disposableBuffer);
+
     default <R extends T> R set(@NonNull final INPUT... inputs) {
         return set(0, inputs);
     }
