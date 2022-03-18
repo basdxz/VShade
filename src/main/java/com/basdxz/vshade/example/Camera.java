@@ -34,7 +34,8 @@ public class Camera {
     }
 
     public Camera updateProjection() {
-        projection.perspective((float) Math.toRadians(fov), width / height, 0.1f, 100f);
+        //projection.perspective((float) Math.toRadians(fov), width / height, 0.1f, 100f);
+        projection.orthoSymmetric(width, height, 0.1f, 100f);
         return this;
     }
 

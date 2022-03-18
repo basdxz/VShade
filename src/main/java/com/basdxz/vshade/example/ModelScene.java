@@ -40,7 +40,7 @@ public class ModelScene extends SimpleScene {
                 //        .rotation(new Quaternionf(Math.PI / 16, Math.PI / 8, 0.0F, 1.0F))
                 //        .build())
                 .modelTransform(ModelTransform.builder()
-                        .position(new Vector3f(0.0F, 0.0F, -2.0F))
+                        .position(new Vector3f(0.0F, 0.0F, -0.1F))
                         .build())
                 .build();
 
@@ -69,10 +69,10 @@ public class ModelScene extends SimpleScene {
     protected void setupGeometry() {
         val obj = Objs.create();
 
-        obj.addVertex(-1, -1, 0);
-        obj.addVertex(1, -1, 0);
-        obj.addVertex(1, 1, 0);
-        obj.addVertex(-1, 1, 0);
+        obj.addVertex(0, 0, 0);
+        obj.addVertex(800, 0, 0);
+        obj.addVertex(800, 600, 0);
+        obj.addVertex(0, 600, 0);
         obj.addFace(0, 1, 3);
         obj.addFace(1, 2, 3);
 

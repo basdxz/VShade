@@ -1,4 +1,4 @@
-#version 460
+#version 460 compatibility
 
 uniform vec3      iResolution;// viewport resolution (in pixels)
 uniform float     iTime;// shader playback time (in seconds)
@@ -16,15 +16,74 @@ in vec2 pass_Position;
 
 out vec4 out_Color;
 
-#define ADD_DETAIL_GROOVE
+/*
+	Neon Lit Hexagons
+	-----------------
+
+	I needed a break from a few technical shaders I've beem hacking away at, so I finished an old
+	geometric example that'd been sitting on the blocks for a while.
+
+	3D hexagon tech imagery is a bit of a cliche, but I've always been a fan. Most tend to be high
+	quality pathtraced renderings, but since this is a realtime raymarched example, I had to make
+	a lot of concessions. The glowing neon lights were inspired by some of Shau's examples, some
+	online imagery, and practically half the demos out there. :)
+
+	I tried to create the glowing effect without the use of a volumetric pass, but my eyes weren't
+	accepting the results, which meant the observant people on here -- pretty much everyone -- would
+	notice immediately, so I put a relatively cheap one in. The improvements were immediate, but it
+	was at the cost of rendering speed... I'm just hoping no one notices the lack of reflections from
+	the neon lights. :) I have a pretty quick laptop, but ever since the WebGL 2 update, it hasn't
+	enjoyed compiling extra passes, so reflections had to go. At a later stage, I might attempt to
+	fake them in some way.
+
+	There are a couple of surface detail defines below that I had to leave out. I also came pretty
+	close to greebling the surfaces, but figured that might be overkill. In the end, I took the
+	"less is more" approach. However, I intend to put together a greebled surface pretty soon.
+
+
+    // Other neon-looking examples:
+
+	// Shau has a heap of bright glowing examples, but here's a few.
+	OTT - shau
+	https://www.shadertoy.com/view/4sVyDd
+
+	43% Burnt - shau
+	https://www.shadertoy.com/view/XljBWW
+
+	Angle Grinder - shau
+	https://www.shadertoy.com/view/XtsfWX
+
+
+    // Great example.
+	Neon World - zguerrero
+    https://www.shadertoy.com/view/MlscDj
+
+*/
+
+
+// Hexagon: 0, Dodecahedron: 1, Circle: 2.
+// Squares, stars, etc, are possible too, but I didn't include those.
+#define SHAPE 0
+
+
+// Details usually make a scene more interesting. In this case, however, they seemed a
+// little expensive, so I left them out.
+//
+// I wanted to include the grooves, at least, but I figured speed on slower machines was
+// more important.
+//#define ADD_DETAIL_GROOVE
 //#define ADD_DETAIL_BOLT
+
+// Animating the neon lights, or not. I find them a little too distracting,
+// so the default is "off."
 //#define ANIMATE_LIGHTS
-#define MOTION_MULTIPLIER 4.
-#define CAMERA_MULTIPLIER 8.
-vec3 GLOW_COLOR = vec3(6, 3, 1);// C, M, Y color for glowing
 
+// If Borg green is more your thing. :)
+//#define GREEN_GLOW
 
-#define FAR 50.// Maximum ray distance.
+// Maximum ray distance.
+#define FAR 50.
+
 // Standard 2D rotation formula.
 mat2 r2(in float a){ float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
 
@@ -52,6 +111,32 @@ float smax(float a, float b, float k){
     float f = max(0., 1. - abs(b - a)/k);
     return max(a, b) + k*.25*f*f;
 }
+
+/*
+// Commutative smooth minimum function. Provided by Tomkh, and taken
+// from Alex Evans's (aka Statix) talk:
+// http://media.lolrus.mediamolecule.com/AlexEvans_SIGGRAPH-2015.pdf
+// Credited to Dave Smith @media molecule.
+float smin(float a, float b, float k){
+
+   float f = max(0., 1. - abs(b - a)/k);
+   return min(a, b) - k*.25*f*f;
+}
+
+*/
+
+/*
+// Tri-Planar blending function. Based on an old Nvidia tutorial.
+vec3 tex3D( sampler2D tex, in vec3 p, in vec3 n ){
+
+    n = max((abs(n) - .2)*7., .001); // n = max(abs(n), .001), etc.
+    n /= (n.x + n.y + n.z );
+
+	vec3 tx = (texture(tex, p.yz)*n.x + texture(tex, p.zx)*n.y + texture(tex, p.xy)*n.z).xyz;
+
+    return tx*tx;
+}
+*/
 
 // Tri-Planar blending function. Based on an old Nvidia writeup:
 // GPU Gems 3 - Ryan Geiss: https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch01.html
@@ -119,6 +204,7 @@ float fbm(in vec3 p){
 }
 
 
+
 // The path is a 2D sinusoid that varies over time, depending upon the frequencies, and amplitudes.
 vec2 path(in float z){
 
@@ -152,6 +238,62 @@ float hex(in vec2 p){
 
 }
 
+/*
+// More accurate formula, but involves more operations and didn't improve quality by any
+// significant amount, so I've used the estimation below.
+float hexPylon(vec2 p2, float pz, float r, float ht){
+
+    vec3 p = vec3(p2.x, pz, p2.y);
+
+    // Note the "*1.5" You need to take the minimum of
+    // long-sided rectangles, not squares. Squares will give
+    // you a dodecahedron.
+    vec3 b = vec3(r*1.5, ht, r);
+
+    //p.xz = abs(p.xz);
+    //p.xz = vec2(p.x*.866025 + p.z*.5, p.z);
+
+    b -= .015;
+    //p.xz = r2(-3.14159/3.)*q.xz;
+  	float d1 = length(max(abs(p) - b, 0.));
+    p.xz = r2(6.2831/3.)*p.xz;
+    float d2 = length(max(abs(p) - b, 0.));
+
+    p.xz = r2(6.2831/3.)*p.xz;
+    float d3 = length(max(abs(p) - b, 0.));
+    return max(max(d1, d2), d3) - .015;
+}
+*/
+
+/*
+// Signed distance to a regular hexagon -- using IQ's more exact method.
+float sdHexagon(in vec2 p, in float r){
+
+  const vec3 k = vec3(-.8660254, .5, .57735); // pi/6: cos, sin, tan.
+
+  // X and Y reflection.
+  p = abs(p);
+  p -= 2.*min(dot(k.xy, p), 0.)*k.xy;
+
+  // Polygon side.
+  return length(p - vec2(clamp(p.x, -k.z*r, k.z*r), r))*sign(p.y - r);
+
+}
+
+// IQ's extrusion formula, with a bit of rounding (the .015 bit) thrown in.
+float opExtrusion(in float sdf, in float pz, in float h)
+{
+    vec2 w = vec2( sdf, abs(pz) - h );
+  	return min(max(w.x,w.y), 0.) + length(max(w + .015, 0.)) - .015;
+}
+
+// A technically correct hexagonal pylon formual.
+float hexPylon(vec2 p2, float pz, float r, float ht){
+
+    float hex = sdHexagon(p2, r);
+    return opExtrusion(hex, pz, ht);
+}
+*/
 
 // Normally, I'd say this is the hexagonal pylon distance function. However, I should
 // probably make the distinction between a fully bonafide distance function and something
@@ -163,20 +305,38 @@ float hex(in vec2 p){
 //
 // By the way, a more exact formula is commented out above.
 //
-// Hexagonal pylon field.
+// Hexagonal pylon field. There's also defines for a dodecahedron and a cylinder.
 float hexPylon(vec2 p2, float pz, float r, float ht){
 
     vec3 p = vec3(p2.x, pz, p2.y);
     vec3 b = vec3(r, ht, r);
 
 
+    #if SHAPE == 0
     // Hexagon.
     p.xz = abs(p.xz);
     p.xz = vec2(p.x*.866025 + p.z*.5, p.z);
     // The ".015" is a subtle rounding factor. Zero gives sharp edges,
     // and larger numbers give a more rounded look.
     return length(max(abs(p) - b + .015, 0.)) - .015;
+    #elif SHAPE == 1
+    // Dodecahedron.
+    p.xz = abs(p.xz);
+    p2 = p.xz*.8660254 + p.zx*.5;
+    p.xz = vec2(max(p2.x, p2.y), max(p.z, p.x));
+    // The ".015" is a subtle rounding factor. Zero gives sharp edges,
+    // and larger numbers give a more rounded look.
+    return length(max(abs(p) - b + .015, 0.)) - .015;
+    #else
+    // Cylinder -- IQ's cylinder function, to be precise, so I think this particular
+    // function is a proper distance field.
+    p.xy = abs(vec2(length(p.xz), p.y)) - b.xy + .015;
+    return min(max(p.x, p.y), 0.) + length(max(p.xy, 0.)) - .015;
+    #endif
+
+
 }
+
 
 
 // IDs for the neon lights. Added at the last minute. Identifying things can be tiresome. Individual
@@ -196,9 +356,6 @@ float svLitID;
 // Variables in order: p.xz, p.y, radius, height, ID, direction (unused).
 float objDist(vec2 p, float pH, float r, float ht, inout float id, float dir){
 
-    //TODO: Control amount of pylons moving
-    ht = ht - smoothstep(.5, .875, sin(6.283 + iTime/MOTION_MULTIPLIER)) * ht + 0.2;
-
     // Neon light height: Four levels, plus the height is divided by two.
     const float s = 1./16.;//1./4./2.*.5;
 
@@ -207,13 +364,14 @@ float objDist(vec2 p, float pH, float r, float ht, inout float id, float dir){
 
     #ifdef ADD_DETAIL_GROOVE
     // I like this extra detail, but it was a little too expensive.
-    h1 = max(h1, -hexPylon(p, pH + ht, r - .025, s/4.));// Extra detail.
+    h1 = max(h1, -hexPylon(p, pH + ht, r - .06, s/4.));// Extra detail.
     #endif
 
     #ifdef ADD_DETAIL_BOLT
     // An alternative extra detail. Also a little on the expensive side.
     h1 = min(h1, hexPylon(p, pH, .1, ht + s/4.));// Extra detail.
     #endif
+
 
 
     // Thin hexagon slab -- sitting just below the top of the main hexagon. It's
@@ -235,11 +393,12 @@ float objDist(vec2 p, float pH, float r, float ht, inout float id, float dir){
 
 // Height field for the hexagon.
 float hexHeight(vec2 p){
+
     // Random height.
     //return hash21(p + 57.)*.75;
 
     // Any kind of cheap flowing height field will do.
-    return dot(sin(p*2. - cos(p.yx*1.4)), vec2(.25)) + 1.;
+    return dot(sin(p*2. - cos(p.yx*1.4)), vec2(.25)) + .5;
 
 
     // Two layers. Not used, because we're trying to keep costs down.
@@ -275,7 +434,7 @@ vec4 getHex(vec2 p, float pH){
     vec4 ht = vec4(hexHeight(hC.xy), hexHeight(hC.zw), hexHeight(hC2.xy), hexHeight(hC2.zw));
     // Restricting the heights to five levels... The ".02" was a hack to take out the lights
     // on the ground tiles, or something. :)
-    ht = floor(ht*2.99)/4./2. + .02;
+    ht = floor(ht*4.99)/4./2. + .02;
 
     // The pylon radius. Lower numbers leave gaps, and heigher numbers give overlap. There's not a
     // lot of room for movement, so numbers above ".3," or so give artefacts.
@@ -305,6 +464,7 @@ vec4 getHex(vec2 p, float pH){
 // pylon that is lit. These were added on the fly. There'd be cleaner ways to do this.
 vec2 v2Rnd, svV2Rnd;
 float gLitID;
+
 
 
 // Reducing the heightmap function to a single texel lookup - via the stone texture which was
@@ -385,7 +545,6 @@ float trace(vec3 ro, vec3 rd){
         float rnd = getRndID(v2Rnd);
         if (rnd>0. && gLitID == 1. && ad<gd) { // && ad<.05
             float gl = .2*(gd - ad)/gd/(1. + ad*ad/gd/gd*8.);
-            gl += sin(iTime*120.)/100.;
             // Colors are possible, but I just wanted the scaler value, which is colorized
             // outside the loop.
             glow += gl;
@@ -397,6 +556,66 @@ float trace(vec3 ro, vec3 rd){
 
     return min(t, FAR);
 }
+
+
+
+
+/*
+void getGlow(vec3 ro, vec3 rd, float t){
+
+   glow = vec3(0);
+   float t2 = hash31(ro + rd)*.25, d, ad;
+   t2 = max(t2 - 3., 0.);
+
+   for (int i = 0; i<30; i++){
+
+		d = map(ro + rd*t2);
+        ad = abs(d);
+
+        if(ad<.001*(t2*.125 + 1.) || t2>FAR) break;
+
+        const float gd = .1;
+        float rnd = getRndID(vRnd);
+        if(rnd>0. && gLitID == 1. && ad<gd) { // && ad<.05
+			float gl = .2*(gd - ad)/gd/(1. + ad*ad/gd/gd*8.);
+            glow += gl;
+        }
+
+		t2 += d;
+
+    }
+
+
+
+}
+*/
+
+/*
+// Second pass, which is the first, and only, reflected bounce.
+// Virtually the same as above, but with fewer iterations and less
+// accuracy.
+//
+// The reason for a second, virtually identical equation is that
+// raymarching is usually a pretty expensive exercise, so since the
+// reflected ray doesn't require as much detail, you can relax things
+// a bit - in the hope of speeding things up a little.
+float traceRef(vec3 ro, vec3 rd){
+
+    float t = 0., d;
+
+    for (int i = 0; i<32; i++){
+
+        d = map(ro + rd*t);
+
+        if(abs(d)<.002*(t*.25 + 1.) || t>FAR) break;
+
+        t += d;
+    }
+
+    return min(t, FAR);
+}
+*/
+
 
 // Cheap shadows are hard. In fact, I'd almost say, shadowing repeat objects - in a setting like this - with limited
 // iterations is impossible... However, I'd be very grateful if someone could prove me wrong. :)
@@ -440,6 +659,57 @@ vec3 getNormal(in vec3 p) {
     const vec2 e = vec2(0.0025, 0);
     return normalize(vec3(map(p + e.xyy) - map(p - e.xyy), map(p + e.yxy) - map(p - e.yxy), map(p + e.yyx) - map(p - e.yyx)));
 }
+
+
+
+/*
+// Tetrahedral normal, to save a couple of "map" calls. Courtesy of IQ.
+vec3 getNormal( in vec3 p ){
+
+    // Note the slightly increased sampling distance, to alleviate
+    // artifacts due to hit point inaccuracies.
+    vec2 e = vec2(0.0025, -0.0025);
+    return normalize(
+        e.xyy * map(p + e.xyy) +
+        e.yyx * map(p + e.yyx) +
+        e.yxy * map(p + e.yxy) +
+        e.xxx * map(p + e.xxx));
+}
+*/
+
+/*
+// Normal calculation, with some edging and curvature bundled in.
+vec3 getNormal(vec3 p, inout float edge, inout float crv, float ef) {
+
+    // Roughly two pixel edge spread, but increased slightly with larger resolution.
+    vec2 e = vec2(ef/mix(450., iResolution.y, .5), 0);
+
+	float d1 = map(p + e.xyy), d2 = map(p - e.xyy);
+	float d3 = map(p + e.yxy), d4 = map(p - e.yxy);
+	float d5 = map(p + e.yyx), d6 = map(p - e.yyx);
+	float d = map(p)*2.;
+
+    edge = abs(d1 + d2 - d) + abs(d3 + d4 - d) + abs(d5 + d6 - d);
+    //edge = abs(d1 + d2 + d3 + d4 + d5 + d6 - d*3.);
+    edge = smoothstep(0., 1., sqrt(edge/e.x*2.));
+
+
+    // Wider sample spread for the curvature.
+    //e = vec2(12./450., 0);
+	//d1 = map(p + e.xyy), d2 = map(p - e.xyy);
+	//d3 = map(p + e.yxy), d4 = map(p - e.yxy);
+	//d5 = map(p + e.yyx), d6 = map(p - e.yyx);
+    //crv = clamp((d1 + d2 + d3 + d4 + d5 + d6 - d*3.)*32. + .5, 0., 1.);
+
+
+    e = vec2(.0025, 0); //iResolution.y - Depending how you want different resolutions to look.
+	d1 = map(p + e.xyy), d2 = map(p - e.xyy);
+	d3 = map(p + e.yxy), d4 = map(p - e.yxy);
+	d5 = map(p + e.yyx), d6 = map(p - e.yyx);
+
+    return normalize(vec3(d1 - d2, d3 - d4, d5 - d6));
+}
+*/
 
 // Ambient occlusion, for that self shadowed look.
 // Based on the original by IQ.
@@ -518,7 +788,7 @@ vec3 getObjectColor(vec3 p, vec3 n){
     col = smoothstep(-.0, .5, col);//*vec3(.5, .8, 1.5);
     col = mix(col, vec3(1)*dot(col, vec3(.299, .587, .114)), .5);
     // Darken the surfaces to bring more attention to the neon lights.
-    col /= 2.;
+    col /= 16.;
 
 
     // Unique random ID for the hexagon pylon.
@@ -536,7 +806,7 @@ vec3 getObjectColor(vec3 p, vec3 n){
     // of direct object coloring with a portion of the glow. That's what is happining here.
 
     // Object glow.
-    float oGlow = .005;
+    float oGlow = 0.;
 
     // Color every lit object with a gradient based on its vertical positioning.
     if (rnd>0. && svLitID==1.) {
@@ -552,8 +822,17 @@ vec3 getObjectColor(vec3 p, vec3 n){
     // Mix the object glow in with a small potion of the volumetric glow.
     glow = mix(glow, vec3(oGlow), .75);
 
-    glow = mix(glow, glow.zyx, dot(cos(p*2. - sin(p.yzx*2.)), vec3(.166)) + .5);
-    glow = pow(vec3(1, 1, 1)*glow.x, GLOW_COLOR);
+    // Colorizing the glow, depending on your requirements. I've used a colorful orangey palette,
+    // then have modified the single color according to a made up 3D transcental function.
+    //glow = pow(vec3(1, 1.05, 1.1)*glow.x, vec3(6, 3, 1));
+    glow = pow(vec3(1.5, 1, 1)*glow, vec3(1, 3, 6));// Mild firey orange.
+    glow = mix(glow, glow.xzy, dot(sin(p*4. - cos(p.yzx*4.)), vec3(.166)) + .5);// Mixing in some pink.
+    glow = mix(glow, glow.zyx, dot(cos(p*2. - sin(p.yzx*2.)), vec3(.166)) + .5);// Blue tones.
+    //glow = mix(glow.zyx, glow, smoothstep(-.1, .1, dot(sin(p + cos(p.yzx)), vec3(.166))));
+
+    #ifdef GREEN_GLOW
+    glow = glow.yxz;
+    #endif
 
 
     return col;
@@ -575,7 +854,7 @@ vec3 doColor(in vec3 sp, in vec3 rd, in vec3 sn, in vec3 lp, in float t){
         vec3 txP = sp;
         //txP.xy -= path(txP.z);
         //txP.xz *= r2(getRndID(svVRnd)*6.2831);
-        sn = texBump(iChannel0, txP*sz0, sn, .001);///(1. + t/FAR)
+        sn = texBump(iChannel0, txP*sz0, sn, .005);///(1. + t/FAR)
 
 
         // Retrieving the normal at the hit point.
@@ -644,7 +923,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     //vec3 lookAt = vec3(0., 0.25, iTime*2.);  // "Look At" position.
     //vec3 camPos = lookAt + vec3(2., 1.5, -1.5); // Camera position, doubling as the ray origin.
 
-    vec3 lk = vec3(0, 1.25, iTime/CAMERA_MULTIPLIER);// "Look At" position.
+    vec3 lk = vec3(0, 1.25, iTime*2.);// "Look At" position.
     vec3 ro = lk + vec3(0, .175, -.25);// Camera position, doubling as the ray origin.
 
 
@@ -707,6 +986,51 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
     sceneColor = passColor;//*(1. - edge*.8);//mix(passColor, vec3(0), fog); //
 
 
+    // Shading. Shadows, ambient occlusion, etc. We're only performing this on the
+    // first pass. Not accurate, but faster, and in most cases, not that noticeable.
+    //float sh = softShadow(ro, lp, 12.);
+    //sh *= calcAO(ro, sn);
+
+    /*
+        // SECOND PASS - REFLECTED RAY
+
+        // Standard reflected ray, which is just a reflection of the unit
+        // direction ray off of the intersected surface. You use the normal
+        // at the surface point to do that. Hopefully, it's common sense.
+        rd = reflect(rd, normalize(sSn*.66 + sn*.34));
+
+
+
+
+        // The reflected pass begins where the first ray ended, which is the suface
+        // hit point, or in a few cases, beyond the far plane. By the way, for the sake
+        // of simplicity, we'll perform a reflective pass for non hit points too. Kind
+        // of wasteful, but not really noticeable. The direction of the new ray will
+        // obviously be in the direction of the reflected ray. See just above.
+        //
+        // To anyone who's new to this, don't forgot to nudge the ray off of the
+        // initial surface point. Otherwise, you'll intersect with the surface
+        // you've just hit. After years of doing this, I still forget on occasion.
+        t = traceRef(ro +  rd*.01, rd);
+        svVRnd = vRnd;
+        svObjID = objID;
+
+        // Advancing the reflected ray origin, "ro," to the new hit point.
+        ro += rd*t;
+
+        // Retrieving the new normal at the reflected hit point.
+        //sn = getNormal(ro);
+        float edge2 = 0., crv2 = 1.;//, ef2 = 8.;
+        sn = getNormal(ro, edge2, crv2, ef);//getNormal(sp);
+
+
+        // Coloring the reflected hit point, then adding a portion of it to the final scene color.
+        // How much you add depends on what you're trying to accomplish.
+        passColor = doColor(ro, rd, sn, lp, t);
+        sceneColor = sceneColor*.5 + passColor*(1. - edge2*.8);//mix(passColor, vec3(0), fog);
+
+    */
+
     //sceneColor *= (1. - edge*.8);
 
 
@@ -722,8 +1046,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
 
     // Square vignette.
-    //uv = fragCoord/iResolution.xy;
-    //sceneColor = min(sceneColor, 1.)*pow( 16.*uv.x*uv.y*(1. - uv.x)*(1. - uv.y) , .0625);
+    uv = fragCoord/iResolution.xy;
+    sceneColor = min(sceneColor, 1.)*pow(16.*uv.x*uv.y*(1. - uv.x)*(1. - uv.y), .0625);
 
     // Clamping the scene color, then presenting to the screen.
     fragColor = vec4(sqrt(clamp(sceneColor, 0.0, 1.0)), 1.0);
@@ -731,6 +1055,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord){
 
 void main(void) {
     mainImage(out_Color, pass_Position);
-
-    //out_Color.rgba = vec4(1);
 }
