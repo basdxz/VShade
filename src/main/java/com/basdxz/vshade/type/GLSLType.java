@@ -1,6 +1,5 @@
 package com.basdxz.vshade.type;
 
-import java.nio.ByteBuffer;
 import java.util.StringJoiner;
 
 public interface GLSLType {
@@ -39,13 +38,5 @@ public interface GLSLType {
                 .add("columnSize=" + columnSize())
                 .add("typeSize=" + typeSize())
                 .toString();
-    }
-
-    @Deprecated
-    default void downloadUniform(int program, int location, ByteBuffer output) {
-    }
-
-    @Deprecated
-    default void uploadUniform(int program, int location, boolean transpose, ByteBuffer input) {
     }
 }
