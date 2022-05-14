@@ -1,4 +1,4 @@
-package com.basdxz.vshade.query.newstuff;
+package com.basdxz.vshade.introspection;
 
 import lombok.*;
 
@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL44.*;
     Reference: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetProgramResource.xhtml
  */
 @Getter
-public enum QueryProgramResource implements IQueryProgramResource {
+public enum ResourceProperty implements IResourceProperty {
     NAME_LENGTH(GL_NAME_LENGTH),
     TYPE(GL_TYPE),
     ARRAY_SIZE(GL_ARRAY_SIZE),
@@ -43,9 +43,9 @@ public enum QueryProgramResource implements IQueryProgramResource {
     TRANSFORM_FEEDBACK_BUFFER_INDEX(GL_TRANSFORM_FEEDBACK_BUFFER_INDEX),
     TRANSFORM_FEEDBACK_BUFFER_STRIDE(GL_TRANSFORM_FEEDBACK_BUFFER_STRIDE);
 
-    private final int programResourceType;
+    private final int propertyType;
 
-    QueryProgramResource(int programResourceType) {
-        this.programResourceType = programResourceType;
+    ResourceProperty(int propertyType) {
+        this.propertyType = propertyType;
     }
 }

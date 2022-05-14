@@ -1,4 +1,4 @@
-package com.basdxz.vshade.query.newstuff;
+package com.basdxz.vshade.introspection;
 
 import com.basdxz.vbuffers.common.MemUtils;
 import lombok.*;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.basdxz.vshade.query.newstuff.QueryProgramResource.*;
+import static com.basdxz.vshade.introspection.ResourceProperty.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL42.*;
 import static org.lwjgl.opengl.GL43.*;
@@ -17,7 +17,7 @@ import static org.lwjgl.opengl.GL43.*;
     References: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetProgramInterface.xhtml
  */
 @Getter
-public enum QueryProgramInterface implements IQueryProgramInterface {
+public enum ShaderInterface implements IShaderInterface {
     UNIFORM(GL_UNIFORM, NAME_LENGTH, TYPE, ARRAY_SIZE, OFFSET, BLOCK_INDEX, ARRAY_STRIDE, MATRIX_STRIDE, IS_ROW_MAJOR, ATOMIC_COUNTER_BUFFER_INDEX, REFERENCED_BY_VERTEX_SHADER, REFERENCED_BY_TESS_CONTROL_SHADER, REFERENCED_BY_TESS_EVALUATION_SHADER, REFERENCED_BY_GEOMETRY_SHADER, REFERENCED_BY_FRAGMENT_SHADER, REFERENCED_BY_COMPUTE_SHADER, LOCATION),
     UNIFORM_BLOCK(GL_UNIFORM_BLOCK, NAME_LENGTH, BUFFER_BINDING, BUFFER_DATA_SIZE, NUM_ACTIVE_VARIABLES, ACTIVE_VARIABLES, REFERENCED_BY_VERTEX_SHADER, REFERENCED_BY_TESS_CONTROL_SHADER, REFERENCED_BY_TESS_EVALUATION_SHADER, REFERENCED_BY_GEOMETRY_SHADER, REFERENCED_BY_FRAGMENT_SHADER, REFERENCED_BY_COMPUTE_SHADER),
     ATOMIC_COUNTER_BUFFER(GL_ATOMIC_COUNTER_BUFFER, BUFFER_BINDING, BUFFER_DATA_SIZE, NUM_ACTIVE_VARIABLES, ACTIVE_VARIABLES),
@@ -44,17 +44,17 @@ public enum QueryProgramInterface implements IQueryProgramInterface {
     //ATOMIC_COUNTER_SHADER(REFERENCED_BY_VERTEX_SHADER, REFERENCED_BY_TESS_CONTROL_SHADER, REFERENCED_BY_TESS_EVALUATION_SHADER, REFERENCED_BY_GEOMETRY_SHADER, REFERENCED_BY_FRAGMENT_SHADER, REFERENCED_BY_COMPUTE_SHADER),
     //BUFFER(REFERENCED_BY_VERTEX_SHADER, REFERENCED_BY_TESS_CONTROL_SHADER, REFERENCED_BY_TESS_EVALUATION_SHADER, REFERENCED_BY_GEOMETRY_SHADER, REFERENCED_BY_FRAGMENT_SHADER, REFERENCED_BY_COMPUTE_SHADER),
     private final int interfaceType;
-    private final List<IQueryProgramResource> resources;
-    private final IntBuffer properties;
+    private final List<IResourceProperty> parameterTypes;
+    private final IntBuffer props;
 
-    QueryProgramInterface(int interfaceType, IQueryProgramResource... resources) {
+    ShaderInterface(int interfaceType, IResourceProperty... parameterTypes) {
         this.interfaceType = interfaceType;
-        if (resources.length < 1)
+        if (parameterTypes.length < 1)
             throw new IllegalArgumentException("Argument resources can't be less than one.");
 
-        this.resources = Collections.unmodifiableList(Arrays.asList(resources));
-        properties = MemUtils.newBufferFromValue(this.resources.stream()
-                        .mapToInt(IQueryProgramResource::programResourceType).toArray())
+        this.parameterTypes = Collections.unmodifiableList(Arrays.asList(parameterTypes));
+        props = MemUtils.newBufferFromValue(this.parameterTypes.stream()
+                        .mapToInt(IResourceProperty::propertyType).toArray())
                 .asReadOnlyBuffer();
     }
 }

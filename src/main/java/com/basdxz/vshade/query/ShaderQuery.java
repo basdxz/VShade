@@ -2,6 +2,7 @@ package com.basdxz.vshade.query;
 
 
 import com.basdxz.vbuffers.common.MemUtils;
+import com.basdxz.vshade.introspection.ShaderInfo;
 import com.basdxz.vshade.type.GLSLTypes;
 import com.basdxz.vshade.variable.GLSLGenericUniformBlock;
 import com.basdxz.vshade.variable.GLSLGenericVariable;
@@ -41,6 +42,8 @@ public class ShaderQuery implements IShaderQuery {
         outputMap = variableMap(GL43.GL_PROGRAM_OUTPUT);
         uniformMap = uniformMap();
         uniformBlockMap = uniformBlockMap();
+
+        new ShaderInfo(program);
     }
 
     protected Map<String, GLSLVariable> variableMap(int glTypeEnum) {
