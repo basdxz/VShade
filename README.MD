@@ -21,7 +21,7 @@ Key features include:
 Silent linkage of unfound uniforms during the query process, preventing fatal exceptions
 Automatic removal of unused vertex attributes from the layout.
 
-An experimental implementation in the context of a (Minecraft Loading Screen)[https://github.com/basdxz/VShadeLoadingScreen/blob/cc8f867371b8dc89baeba6bc886f099068c5c1d9/src/main/java/com/basdxz/vshadeloadingscreen/scene/HexagonScene.java] 
+An experimental implementation in the context of a [Minecraft Loading Screen](https://github.com/basdxz/VShadeLoadingScreen/blob/cc8f867371b8dc89baeba6bc886f099068c5c1d9/src/main/java/com/basdxz/vshadeloadingscreen/scene/HexagonScene.java)
 
 ## Future
 
