@@ -1,25 +1,34 @@
 # VShade
 
-VShade is a Java library based on Java 8 and LWJGL 2.9.3, intending to further abstract the troublesome bindings between
-GLSL shaders and Java. Allowing for easily defining and manipulating shader variables.
+VShade is a Java library built on Java 8 and LWJGL 2.9.3, designed to simplify and streamline the integration of GLSL shaders with Java applications.
+It aims to provide an easy-to-use interface for defining and manipulating shader variables, bridging the gap between GLSL's C/C++ centric design and Java's object-oriented approach.
 
 ## Motivation
 
-GLSL was written with C/C++ in mind, with most of the errors handed off to the programmer. In particular, data layouts
-for both attribute and uniforms alike are both expected to be provided as pointers to where the data is laid out in c
-structs which Java doesn't have. Additionally, unused attributes and uniforms are removed if they don't affect the final
-output. Finally, I found having to explicitly number the data clunky and error-prone, with consistent string names being
-easier to deal with.
+GLSL was primarily designed with C/C++ in mind, often leaving Java developers to deal with complex and error-prone bindings.
+The data layouts for both attribute and uniform variables require pointers to C structs, which Java does not support natively.
+Furthermore, unused attributes and uniforms are removed if they don't affect the final output, and the explicit numbering of data can be cumbersome and error-prone.
+VShade aims to address these challenges and create a more Java-friendly shader development experience.
 
 ## Approach
 
-VShade solves this problem by providing builders and data types for constructing what inputs and outputs a shader
-program has. Then querying the shader after it has been compiled and linked. Providing optional verbose logging for the
-process. Uniforms that aren't found during the query process can be silently linked to nothing instead of causing a
-fatal exception and unused vertex attributes are stripped out from the layout.
+VShade tackles these issues by providing builders and data types for constructing shader program inputs and outputs.
+After compiling and linking the shader, VShade queries the program to ensure proper connections between Java and GLSL.
+The library also offers optional verbose logging for the process, enabling easier debugging.
+
+Key features include:
+
+Silent linkage of unfound uniforms during the query process, preventing fatal exceptions
+Automatic removal of unused vertex attributes from the layout.
+
+An experimental implementation in the context of a (Minecraft Loading Screen)[https://github.com/basdxz/VShadeLoadingScreen/blob/cc8f867371b8dc89baeba6bc886f099068c5c1d9/src/main/java/com/basdxz/vshadeloadingscreen/scene/HexagonScene.java] 
 
 ## Future
 
-I intent to rework this project, the V2 will have little in common with the current solution outside of solving the same problem.
-Focusing on LWJGL 3/4 as the target backend, but realistically the coupling will be rather weak. It will instead use an external
-SPIR-V compiler/introspection. Alongside introducing features such as runtime re-compilation in a development enviroment.
+VShade is planned for a major rework in the future (V2), focusing on better compatibility with LWJGL 3/4 and incorporating an external SPIR-V compiler/introspection for more efficient shader development.
+While the core problem VShade solves will remain the same, the new version will introduce significant changes and improvements, such as:
+
+- Looser coupling with the LWJGL backend
+- Runtime re-compilation in development environments
+
+By incorporating these enhancements, VShade V2 aims to provide an even more robust and developer-friendly solution for Java-based GLSL shader integration.
