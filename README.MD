@@ -18,31 +18,11 @@ program has. Then querying the shader after it has been compiled and linked. Pro
 process. Uniforms that aren't found during the query process can be silently linked to nothing instead of causing a
 fatal exception and unused vertex attributes are stripped out from the layout.
 
-## Installation
+## Future
 
-For Gradle:
-
-```
-repo here in groovy
-
-dep here in groovy
-```
-
-For Maven:
-
-```
-repo here in xml
-
-dep here in xml
-```
-
-## Usage
-
-```java
--Init shader with uniform/uniform block and attributes
-        -Load it
-        -Modify it every frame 
-```
+I intent to rework this project, the V2 will have little in common with the current solution outside of solving the same problem.
+Focusing on LWJGL 3/4 as the target backend, but realistically the coupling will be rather weak. It will instead use an external
+SPIR-V compiler/introspection. Alongside introducing features such as runtime re-compilation in a development enviroment.
 
 ## License
 
