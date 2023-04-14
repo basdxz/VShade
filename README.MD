@@ -23,7 +23,3 @@ fatal exception and unused vertex attributes are stripped out from the layout.
 I intent to rework this project, the V2 will have little in common with the current solution outside of solving the same problem.
 Focusing on LWJGL 3/4 as the target backend, but realistically the coupling will be rather weak. It will instead use an external
 SPIR-V compiler/introspection. Alongside introducing features such as runtime re-compilation in a development enviroment.
-
-## License
-
-[GNU LGPLv3](https://choosealicense.com/licenses/lgpl-3.0/)
